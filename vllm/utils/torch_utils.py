@@ -45,6 +45,7 @@ STR_DTYPE_TO_TORCH_DTYPE = {
     "tq-t4nc": torch.uint8,
     "tq-k3v4nc": torch.uint8,
     "tq-t3nc": torch.uint8,
+    "tq4": torch.uint8,
 }
 
 TORCH_DTYPE_TO_NUMPY_DTYPE = {

@@ -32,6 +32,12 @@ TQ_PRESETS: dict[str, dict] = {
         "value_quant_bits": 3,
         "norm_correction": True,
     },
+    "tq4": {
+        "key_quant_bits": 0,  # 4-bit MSE keys (16 centroids)
+        "total_bits": 4,
+        "value_quant_bits": 4,
+        "norm_correction": False,  # simpler path, proven working
+    },
 }
 
 
@@ -49,6 +55,7 @@ class TurboQuantConfig:
         tq-t4nc:   4-bit MSE keys + 4-bit values + NC, 3.8x, +2.71% PPL
         tq-k3v4nc: 3-bit MSE keys + 4-bit values + NC, ~3.5x, +10.63% PPL
         tq-t3nc:   3-bit MSE keys + 3-bit values + NC, 4.9x, +20.59% PPL
+        tq4:       4-bit MSE keys + 4-bit values (no NC), simple baseline
 
     Args:
         head_dim: Attention head dimension (e.g. 64, 96, 128).
@@ -173,7 +180,7 @@ class TurboQuantConfig:
                          head_dim: int) -> "TurboQuantConfig":
         """Create config from a named preset.
 
-        Valid presets: tq-k8v4, tq-t4nc, tq-k3v4nc, tq-t3nc.
+        Valid presets: tq-k8v4, tq-t4nc, tq-k3v4nc, tq-t3nc, tq4.
         """
         if cache_dtype not in TQ_PRESETS:
             valid = ", ".join(TQ_PRESETS.keys())

@@ -68,6 +68,7 @@ class TurboQuantAttentionBackend(AttentionBackend):
         "tq-t4nc",
         "tq-k3v4nc",
         "tq-t3nc",
+        "tq4",
     ]
 
     @staticmethod
@@ -117,7 +118,7 @@ class TurboQuantAttentionBackend(AttentionBackend):
     def supports_kv_cache_dtype(cls, kv_cache_dtype: CacheDType | None) -> bool:
         if kv_cache_dtype is None:
             return False
-        return kv_cache_dtype is not None and kv_cache_dtype.startswith("tq-")
+        return kv_cache_dtype is not None and kv_cache_dtype.startswith("tq")
 
     @classmethod
     def supports_head_size(cls, head_size: int) -> bool:
