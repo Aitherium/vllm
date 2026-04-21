@@ -32,6 +32,15 @@ TQ_PRESETS: dict[str, dict] = {
         "value_quant_bits": 3,
         "norm_correction": True,
     },
+    # Hybrid 3.5-bit: 4-bit MSE keys (16 centroids) + 3-bit values + NC.
+    # Best throughput/quality tradeoff for 1M+ context. 4.3x compression.
+    # Desktop benchmark: 3426.7 tok/s, 4.7M KV tokens, Qwen3.5-35B AWQ.
+    "tq-t35nc": {
+        "key_quant_bits": 0,  # 4-bit MSE keys (16 centroids)
+        "total_bits": 4,
+        "value_quant_bits": 3,
+        "norm_correction": True,
+    },
 }
 
 
@@ -47,6 +56,7 @@ class TurboQuantConfig:
     Named presets (use via --kv-cache-dtype):
         tq-k8v4:   FP8 keys + 4-bit values, 2.6x compression, +1.17% PPL
         tq-t4nc:   4-bit MSE keys + 4-bit values + NC, 3.8x, +2.71% PPL
+        tq-t35nc:  4-bit MSE keys + 3-bit values + NC, 4.3x (hybrid 3.5-bit)
         tq-k3v4nc: 3-bit MSE keys + 4-bit values + NC, ~3.5x, +10.63% PPL
         tq-t3nc:   3-bit MSE keys + 3-bit values + NC, 4.9x, +20.59% PPL
 

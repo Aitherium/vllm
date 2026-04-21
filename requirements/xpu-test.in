@@ -1,7 +1,5 @@
 # --- Test Infrastructure ---
 tblib
-pytest
-pytest_asyncio
 pytest-timeout
 pytest-cov
 pytest-forked
@@ -9,11 +7,8 @@ pytest-rerunfailures
 pytest-shard
 
 # --- Core Tools & Bindings ---
-
 absl-py
-accelerate
 arctic-inference
-hf_transfer
 lm_eval[api]
 modelscope
 

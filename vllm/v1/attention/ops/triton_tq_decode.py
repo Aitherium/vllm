@@ -503,7 +503,21 @@ def triton_tq_decode_attention(
     sparse_v_threshold = float(os.environ.get("TQ_SPARSE_V_THRESHOLD", "1e-6"))
 
     # Triton stage 1: split-KV tiled attention scoring + value accumulation
-    BLOCK_KV = 4
+    # Auto-scale BLOCK_KV based on max sequence length for throughput:
+    #   ≤4K ctx  → BLOCK_KV=4   (low overhead, good for short seqs)
+    #   ≤64K ctx → BLOCK_KV=8   (balanced)
+    #   ≤256K    → BLOCK_KV=16  (fewer iterations per split)
+    #   >256K    → BLOCK_KV=32  (critical for 1M+ ctx / 4.7M KV tokens)
+    if max_seq_len > 262144:
+        BLOCK_KV = 32
+    elif max_seq_len > 65536:
+        BLOCK_KV = 16
+    elif max_seq_len > 4096:
+        BLOCK_KV = 8
+    else:
+        BLOCK_KV = 4
+    # Allow env override for benchmarking
+    BLOCK_KV = int(os.environ.get("TQ_BLOCK_KV", str(BLOCK_KV)))
     grid = (B, Hq, NUM_KV_SPLITS)
     _tq_decode_stage1[grid](
         q_rot,

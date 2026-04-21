@@ -10,6 +10,20 @@ __pycache__/
 
 .mypy_cache
 
+# ── AitherOS TQ build: exclude everything not needed ──
+.git
+.github
+.buildkite
+.gemini
+benchmarks
+tests
+docs
+examples
+scripts
+tools
+docker
+cmake
+
 # Distribution / packaging
 .Python
 /build/
@@ -31,3 +45,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+vllm_flash_attn
+vllm/vllm_flash_attn
+csrc
+vllm.egg-info
+requirements
