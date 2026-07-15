@@ -54,6 +54,15 @@ def register():
     # No envs set -> no patches -> stock behavior (backend stays dormant).
     tq_mode = os.environ.get("AITHER_TQ_MODE", "")
     tq_bits_str = os.environ.get("AITHER_TQ_BITS", "")
+    if tq_mode.endswith("-primary"):
+        # D-411: PRIMARY is EAGER-ONLY today. Under torch.compile +
+        # piecewise CUDA graphs (fork 0.19.1) the padded splitting-op
+        # inputs make the layer-0 hook write trip a device-side index
+        # assert during decode replay and the engine dies mid-generation.
+        print("[aither-kvcache] WARNING: TQ PRIMARY mode is EAGER-ONLY — "
+              "pass --enforce-eager (VLLM_TQ_ENFORCE_EAGER=1). Compiled/"
+              "cudagraph mode crashes with a device-side assert (D-411).",
+              file=sys.stderr, flush=True)
     if tq_mode or tq_bits_str in ("2", "3", "4"):
         try:
             try:
